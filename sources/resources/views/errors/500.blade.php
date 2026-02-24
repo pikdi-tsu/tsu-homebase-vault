@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Server Internal</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+    <!-- Icon -->
+    <link rel="icon" href="{{ asset('images/favicon/favicon.ico') }}" type="image/x-icon"/>
+    <link rel="shortcut icon" href="{{ asset('images/favicon/favicon.ico') }}" type="image/x-icon"/>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon/favicon-96x96.png') }}" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/favicon/favicon.svg') }}" />
+    <link rel="shortcut icon" href="{{ asset('images/favicon/favicon.ico') }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/favicon/apple-touch-icon.png') }}" />
+    <meta name="apple-mobile-web-app-title" content="TSU Homebase" />
+    <link rel="manifest" href="{{ asset('images/favicon/site.webmanifest') }}" />
+
+    <!-- Script -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script>
+        let theme = localStorage.getItem('theme') || 'system';
+        if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+
+<div class="absolute top-4 right-4">
+    <button id="theme-toggle" type="button" class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none">
+        <svg id="icon-sun" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        <svg id="icon-moon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+        <svg id="icon-system" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+    </button>
+</div>
+
+<div class="min-h-screen flex flex-col items-center justify-center text-center px-4">
+    <div class="mb-6">
+        <a href="{{ route('dashboard') }}" class="flex justify-center">
+            <img src="{{ asset('images/icon-logo-tsu.png') }}" alt="Ikon Tiga Serangkai University" width="40px" />
+        </a>
+    </div>
+    <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-200">Maaf, Terjadi Kesalahan pada Sistem</h1>
+    <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Saat ini sedang terjadi gangguan tak terduga di server kami. Tim teknis kami telah diberi tahu dan sedang bekerja untuk menyelesaikannya.</p>
+    <p class="mt-2 text-gray-500 dark:text-gray-300">Coba Muat Ulang Halaman</p>
+</div>
+
+<script>
+    const toggleBtn = document.getElementById('theme-toggle');
+    const sunIcon = document.getElementById('icon-sun');
+    const moonIcon = document.getElementById('icon-moon');
+    const systemIcon = document.getElementById('icon-system');
+    const cycle = ['system', 'light', 'dark'];
+
+    // Satu fungsi untuk mengatur semuanya: tema DAN ikon
+    function updateThemeAndIcons() {
+        let theme = localStorage.getItem('theme') || 'system';
+
+        // Terapkan class dark/light ke <html>
+        if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // Tampilkan ikon yang benar
+        sunIcon.style.display = theme === 'light' ? 'block' : 'none';
+        moonIcon.style.display = theme === 'dark' ? 'block' : 'none';
+        systemIcon.style.display = theme === 'system' ? 'block' : 'none';
+    }
+
+    // Tambahkan event listener ke tombol
+    toggleBtn.addEventListener('click', () => {
+        let currentTheme = localStorage.getItem('theme') || 'system';
+        let currentIndex = cycle.indexOf(currentTheme);
+        let nextIndex = (currentIndex + 1) % cycle.length;
+        let newTheme = cycle[nextIndex];
+
+        localStorage.setItem('theme', newTheme);
+        updateThemeAndIcons(); // Panggil fungsi utama untuk update
+    });
+
+    // Panggil fungsi utama sekali saat halaman dimuat untuk mengatur state awal
+    updateThemeAndIcons();
+</script>
+</body>
+</html>

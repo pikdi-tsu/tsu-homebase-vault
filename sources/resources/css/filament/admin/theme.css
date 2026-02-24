@@ -1,0 +1,46 @@
+@import "../../../../../node_modules/tailwindcss/dist/lib.d.mts";
+@import '../../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+
+/* === Kustomisasi Input Select dan Input Tags === */
+
+.fi-fo-select .fi-badge.fi-color-primary,
+.fi-fo-tags-input .fi-badge.fi-color-primary {
+    /* Latar belakang: Warna gold Anda dengan 10% opacity */
+    background-color: rgba(245, 185, 71, 0.1);
+
+    /* Teks: Warna gold Anda tapi solid (tidak transparan) */
+    color: #F5B947;
+
+    /* Border/Ring: Warna gold Anda dengan 20% opacity */
+    --tw-ring-opacity: 1;
+    --tw-ring-color: rgba(245, 185, 71, 0.2);
+}
+
+/* === Kustomisasi Sidebar === */
+
+/* Target link (<a>) di dalam item sidebar yang sedang aktif */
+.fi-sidebar-item.fi-active > a {
+    /* Hapus warna latar belakang solid */
+    background-color: transparent;
+
+    /* Ubah warna teks & ikon menjadi gold */
+    color: #F5B947;
+
+    /* Tambahkan garis vertikal tebal di sebelah kiri */
+    border-left: 3px solid #F5B947;
+}
+
+/* Target ikon (SVG) di dalam item sidebar yang sedang aktif */
+.fi-sidebar-item.fi-active > a .fi-sidebar-item-icon {
+    /* Pastikan warna ikon juga ikut berubah menjadi gold */
+    color: #F5B947;
+}
+
+/* Bonus: Sesuaikan warna hover agar lebih lembut */
+.fi-sidebar-item:not(.fi-active):hover > a {
+    background-color: rgba(245, 185, 71, 0.05); /* Warna gold sangat transparan */
+}
