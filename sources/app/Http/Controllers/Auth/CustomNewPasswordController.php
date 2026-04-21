@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\PasswordResetToken;
 use App\Models\UserDosenTendik;
 use App\Models\UserMahasiswa;
 use Carbon\Carbon;
@@ -27,8 +28,7 @@ class CustomNewPasswordController extends NewPasswordController
         ]);
 
         // 2. Cek Token di database
-        $resetRecord = DB::table('password_reset_tokens')
-            ->where('email', $request->email)
+        $resetRecord = PasswordResetToken::where('email', $request->email)
             ->where('token', $request->token)
             ->first();
 
@@ -53,7 +53,7 @@ class CustomNewPasswordController extends NewPasswordController
         ])->save();
 
         // 6. Hapus Token
-        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+        PasswordResetToken::where('email', $request->email)->delete();
 
         // 7. Redirect ke login (Respons standar Fortify)
         return app(PasswordResetResponse::class, ['status' => __('passwords.reset')]);
