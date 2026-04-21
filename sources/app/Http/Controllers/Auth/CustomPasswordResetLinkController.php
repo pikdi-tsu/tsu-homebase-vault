@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\PasswordResetToken;
 use Laravel\Fortify\Contracts\SuccessfulPasswordResetLinkRequestResponse;
 use App\Mail\SendResetPasswordToken;
 use App\Models\UserDosenTendik;
@@ -35,9 +36,10 @@ class CustomPasswordResetLinkController extends PasswordResetLinkController
         }
 
         // 4. Buat Token
-        DB::table('password_reset_tokens')->where('email', $email)->delete();
+        PasswordResetToken::where('email', $email)->delete();
         $token = Str::random(64);
-        DB::table('password_reset_tokens')->insert([
+
+        PasswordResetToken::create([
             'email' => $email,
             'token' => $token,
             'created_at' => Carbon::now()
@@ -45,7 +47,7 @@ class CustomPasswordResetLinkController extends PasswordResetLinkController
 
         // 5. Kirim Email
         try {
-            Mail::to($user)->send(new SendResetPasswordToken($token, $email));
+            Mail::to($user)->send(new SendResetPasswordToken($token, $email, $user->name));
         } catch (\Exception $e) {
             Log::error('Gagal kirim email reset password: ' . $e->getMessage());
         }
