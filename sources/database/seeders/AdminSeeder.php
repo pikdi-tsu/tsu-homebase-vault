@@ -63,6 +63,7 @@ class AdminSeeder extends Seeder
             [
                 'username' => '623048003',
                 'nidn' => '0623048003',
+                'nuptk' => '2755758659130152',
                 'name' => 'BRAMASTO WIRYAWAN YUDANTO',
                 'password' => Hash::make('bramasto@123#'),
                 'created_by' => '623048003',

@@ -203,6 +203,11 @@ class UserDosenTendikResource extends Resource
                     ->placeholder('Tidak ada NIDN')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('nuptk')
+                    ->label('NUPTK dosen')
+                    ->placeholder('Tidak ada NUPTK')
+                    ->searchable()
+                    ->sortable(),
                 ImageColumn::make('profile_photo_path')
                     ->label('Foto Profil')
                         ->disk('public')
