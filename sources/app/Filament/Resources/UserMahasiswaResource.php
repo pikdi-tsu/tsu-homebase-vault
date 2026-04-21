@@ -90,10 +90,6 @@ class UserMahasiswaResource extends Resource
                     ->maxLength(255)
                     ->columnSpanFull()
                     ->required(),
-                TextInput::make('unit')
-                    ->label('Department')
-                    ->placeholder('Masukkan Tempat Unit Mahasiswa')
-                    ->columnSpanFull(),
 
                 // ROLE & PERMISSIONS SPATIE (Utama)
                 Select::make('roles')
@@ -115,14 +111,14 @@ class UserMahasiswaResource extends Resource
                     ->helperText('Format: Nama Permission (guard)'),
 
                 // ROLE SIAKAD & PMB LEGACY (Dari MasterGroup)
-                Select::make('role_access')
-                    ->label('Role Legacy')
-                    ->options(MasterGroup::all()->pluck('NamaGroup', 'KodeGroupUser'))
-                    ->searchable(),
-                Select::make('privilege_pmb')
-                    ->label('Privilege PMB')
-                    ->options(PrivilegePMB::all()->pluck('NamaGroup', 'KodeGroupUser'))
-                    ->searchable(),
+//                Select::make('role_access')
+//                    ->label('Role Legacy')
+//                    ->options(MasterGroup::all()->pluck('NamaGroup', 'KodeGroupUser'))
+//                    ->searchable(),
+//                Select::make('privilege_pmb')
+//                    ->label('Privilege PMB')
+//                    ->options(PrivilegePMB::all()->pluck('NamaGroup', 'KodeGroupUser'))
+//                    ->searchable(),
 
                 // Security Question
                 Select::make('q1')
@@ -171,10 +167,6 @@ class UserMahasiswaResource extends Resource
                     ->sortable(),
                 TextColumn::make('email')
                     ->searchable(),
-                TextColumn::make('unit')
-                    ->label('Department')
-                    ->placeholder('Tidak ada tempat unit')
-                    ->searchable(),
 
                 // ROLE & PERMISSIONS SPATIE (Utama)
                 TextColumn::make('roles.name')
@@ -214,18 +206,18 @@ class UserMahasiswaResource extends Resource
 //                    }),
 
                 // ROLE SIAKAD & PMB LEGACY (Dari MasterGroup)
-                TextColumn::make('MasterGroup.NamaGroup')
-                    ->label('Role Legacy')
-                    ->placeholder('Tidak ada role')
-                    ->badge()
-                    ->color('secondary')
-                    ->searchable(),
-                TextColumn::make('MasterGroupPMB.NamaGroup')
-                    ->label('Privilege PMB')
-                    ->placeholder('Tidak ada role')
-                    ->badge()
-                    ->color('secondary')
-                    ->searchable(),
+//                TextColumn::make('MasterGroup.NamaGroup')
+//                    ->label('Role Legacy')
+//                    ->placeholder('Tidak ada role')
+//                    ->badge()
+//                    ->color('secondary')
+//                    ->searchable(),
+//                TextColumn::make('MasterGroupPMB.NamaGroup')
+//                    ->label('Privilege PMB')
+//                    ->placeholder('Tidak ada role')
+//                    ->badge()
+//                    ->color('secondary')
+//                    ->searchable(),
 
                 // Security Question
 //                TextColumn::make('q1')

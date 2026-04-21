@@ -130,10 +130,6 @@ class UserDosenTendikResource extends Resource
                     ->unique(ignoreRecord: true)
                     ->columnSpanFull()
                     ->required(),
-                TextInput::make('unit')
-                    ->label('Department')
-                    ->placeholder('Masukkan Tempat Unit Karyawan')
-                    ->columnSpanFull(),
 
                 // ROLE & PERMISSIONS SPATIE (Utama)
                 Select::make('roles')
@@ -155,14 +151,14 @@ class UserDosenTendikResource extends Resource
                     ->helperText('Format: Nama Permission (guard)'),
 
                 // ROLE SIAKAD & PMB LEGACY (Dari MasterGroup)
-                Select::make('role_access')
-                    ->label('Role Legacy')
-                    ->options(MasterGroup::all()->pluck('NamaGroup', 'KodeGroupUser'))
-                    ->searchable(),
-                Select::make('privilege_pmb')
-                    ->label('Privilege PMB')
-                    ->options(PrivilegePMB::all()->pluck('NamaGroup', 'KodeGroupUser'))
-                    ->searchable(),
+//                Select::make('role_access')
+//                    ->label('Role Legacy')
+//                    ->options(MasterGroup::all()->pluck('NamaGroup', 'KodeGroupUser'))
+//                    ->searchable(),
+//                Select::make('privilege_pmb')
+//                    ->label('Privilege PMB')
+//                    ->options(PrivilegePMB::all()->pluck('NamaGroup', 'KodeGroupUser'))
+//                    ->searchable(),
 
                 // Security Question
                 Select::make('q1')
@@ -207,6 +203,11 @@ class UserDosenTendikResource extends Resource
                     ->placeholder('Tidak ada NIDN')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('nuptk')
+                    ->label('NUPTK dosen')
+                    ->placeholder('Tidak ada NUPTK')
+                    ->searchable()
+                    ->sortable(),
                 ImageColumn::make('profile_photo_path')
                     ->label('Foto Profil')
                         ->disk('public')
@@ -217,10 +218,6 @@ class UserDosenTendikResource extends Resource
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('email')
-                    ->searchable(),
-                TextColumn::make('unit')
-                    ->label('Department')
-                    ->placeholder('Tidak ada tempat unit')
                     ->searchable(),
 
                 // ROLE & PERMISSIONS SPATIE (Utama)
@@ -245,24 +242,24 @@ class UserDosenTendikResource extends Resource
                     ->searchable(),
 
                 // ROLE SIAKAD & PMB LEGACY (Dari MasterGroup)
-                TextColumn::make('MasterGroup.NamaGroup')
-                    ->label('Role Legacy')
-                    ->placeholder('Tidak ada role')
-                    ->badge()
-                    ->limitList(2)
-                    ->listWithLineBreaks()
-                    ->expandableLimitedList()
-                    ->color('secondary')
-                    ->searchable(),
-                TextColumn::make('MasterGroupPMB.NamaGroup')
-                    ->label('Privilege PMB')
-                    ->placeholder('Tidak ada role')
-                    ->badge()
-                    ->limitList(2)
-                    ->listWithLineBreaks()
-                    ->expandableLimitedList()
-                    ->color('secondary')
-                    ->searchable(),
+//                TextColumn::make('MasterGroup.NamaGroup')
+//                    ->label('Role Legacy')
+//                    ->placeholder('Tidak ada role')
+//                    ->badge()
+//                    ->limitList(2)
+//                    ->listWithLineBreaks()
+//                    ->expandableLimitedList()
+//                    ->color('secondary')
+//                    ->searchable(),
+//                TextColumn::make('MasterGroupPMB.NamaGroup')
+//                    ->label('Privilege PMB')
+//                    ->placeholder('Tidak ada role')
+//                    ->badge()
+//                    ->limitList(2)
+//                    ->listWithLineBreaks()
+//                    ->expandableLimitedList()
+//                    ->color('secondary')
+//                    ->searchable(),
 
                 // Security Question
 //                TextColumn::make('pertanyaanKeamananSatu.pertanyaan')
