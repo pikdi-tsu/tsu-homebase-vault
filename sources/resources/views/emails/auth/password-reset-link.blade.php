@@ -27,7 +27,7 @@
         <h2>TSU Homebase</h2>
     </div>
     <div class="content">
-        <p><strong>Halo!</strong></p>
+        <p style="font-size: 16px;"><strong>Halo, {{ $name }}! 👋</strong></p>
         <p>Anda menerima email ini karena kami menerima permintaan reset password untuk akun Anda.</p>
 
         <p style="text-align: center;">

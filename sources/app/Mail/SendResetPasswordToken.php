@@ -15,15 +15,17 @@ class SendResetPasswordToken extends Mailable
     use Queueable, SerializesModels;
 
     public $token;
+    public $name;
     public $email;
     public $resetUrl;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($token, $email)
+    public function __construct($token, $email, $name)
     {
         $this->token = $token;
+        $this->name = $name;
         $this->email = $email;
 
         // Ambil URL Front-end dari .env (misal: FRONTEND_URL=http://localhost:3000)
@@ -43,6 +45,7 @@ class SendResetPasswordToken extends Mailable
         return $this->subject('Link Reset Password Anda')
             ->view('emails.auth.password-reset-link', [
                 'resetUrl' => $this->resetUrl,
+                'name' => $this->name
             ]);
     }
 
