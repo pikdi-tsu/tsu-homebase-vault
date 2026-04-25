@@ -1,0 +1,58 @@
+name: deploy.yml
+on:
+  push:
+    branches:
+      - main # Otomatis deploy setiap ada push/merge ke branch main
+
+jobs:
+  web-deploy:
+    name: Deploying Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get latest code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Optimasi fetch agar lebih cepat
+
+      # [OPSIONAL] Jika kamu mau GitHub yang nge-build vendor Laravel-nya
+      # Hapus komentar di bawah ini jika kamu tidak mem-push folder vendor ke GitHub
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install Dependencies (Composer)
+        run: |
+          cd sources
+          composer install --no-dev --optimize-autoloader
+
+      - name: Sync files to DirectAdmin
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.3
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # PENTING: Arahkan ke folder spesifik domain kamu di DirectAdmin
+          server-dir: /domains/homebase.tsu.ac.id/public_html/
+          # Tambahkan file/folder lain yang tidak perlu diupload ke server
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            README.md
+            *.sqlite
+            phpunit.xml
+            source/resources/css/
+            source/resources/js/
+            source/resources/saas/
+            source/vite.config.js
+            source/tailwind.config.js
+            source/postcss.config.js
+            source/package.json
+            source/package-lock.json
+            node_modules/
+            .idea/
+            .vscode/
+            .DS_Store
+            sources/storage/logs/*.log
