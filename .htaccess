@@ -18,6 +18,13 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # PROTEKSI ARSITEKTUR VAULT
+    # Blokir semua akses langsung ke folder sources
+    RewriteRule ^sources/ - [F,L,NC]
+
+    # Blokir akses ke dotfiles (.env, .git, .github) di root
+    RewriteRule "(^|/)\." - [F,L]
+
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
