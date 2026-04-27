@@ -34,6 +34,13 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
 
+      - name: Create Framework Directories
+        run: |
+          cd sources
+          mkdir -p storage/framework/{sessions,views,cache}
+          mkdir -p bootstrap/cache
+          chmod -R 775 storage bootstrap/cache
+
       - name: Install Composer dependencies
         run: |
           cd sources
