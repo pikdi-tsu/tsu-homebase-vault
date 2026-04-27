@@ -44,6 +44,9 @@ jobs:
           touch database/database.sqlite
 
       - name: Install Composer dependencies
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
         run: |
           cd sources
           composer install --prefer-dist --no-interaction --no-progress
