@@ -6,43 +6,22 @@ on:
 
 jobs:
   web-deploy:
-    name: Deploying Files
+    name: Fast Deploy to DirectAdmin
     runs-on: ubuntu-latest
 
     steps:
       - name: Get latest code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2 # Optimasi fetch agar lebih cepat
+          fetch-depth: 2
 
-      # [OPSIONAL] Jika kamu mau GitHub yang nge-build vendor Laravel-nya
-      # Hapus komentar di bawah ini jika kamu tidak mem-push folder vendor ke GitHub
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-
-      - name: Create Framework Directories
-        run: |
-          cd sources
-          mkdir -p storage/framework/{sessions,views,cache}
-          mkdir -p bootstrap/cache
-          chmod -R 775 storage bootstrap/cache
-
-      - name: Install Dependencies (Composer)
-        run: |
-          cd sources
-          composer install --no-dev --optimize-autoloader
-
-      - name: Sync files to DirectAdmin
+      - name: Sync files to DirectAdmin (Source Code Only)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.3
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # PENTING: Arahkan ke folder spesifik domain kamu di DirectAdmin
           server-dir: /domains/homebase.tsu.ac.id/public_html/
-          # Tambahkan file/folder lain yang tidak perlu diupload ke server
           exclude: |
             **/.git*
             **/.git*/**
@@ -50,16 +29,35 @@ jobs:
             README.md
             *.sqlite
             phpunit.xml
-            source/resources/css/
-            source/resources/js/
-            source/resources/saas/
-            source/vite.config.js
-            source/tailwind.config.js
-            source/postcss.config.js
-            source/package.json
-            source/package-lock.json
-            node_modules/
-            .idea/
-            .vscode/
+            sources/vendor/**
+            sources/resources/css/**
+            sources/resources/js/**
+            sources/vite.config.js
+            sources/tailwind.config.js
+            sources/postcss.config.js
+            sources/package.json
+            sources/package-lock.json
+            node_modules/**
+            .idea/**
+            .vscode/**
             .DS_Store
             sources/storage/logs/*.log
+
+      - name: Execute Server Scripts via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          # Kamu perlu nambahin secret SSH ini di repo GitHub kamu
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            cd /domains/homebase.tsu.ac.id/public_html/sources
+            mkdir -p storage/framework/{sessions,views,cache}
+            mkdir -p bootstrap/cache
+            chmod -R 775 storage bootstrap/cache
+            composer install --no-dev --optimize-autoloader
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
