@@ -3,8 +3,8 @@ name: Tests
 on:
   push:
     branches:
-      - master
-      - '*.x'
+      - main
+      - development
   pull_request:
   schedule:
     - cron: '0 0 * * *'
@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [8.2, 8.3, 8.4]
+        php: [8.4]
 
     name: PHP ${{ matrix.php }}
 
@@ -34,14 +34,33 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
 
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Create Framework Directories
+        run: |
+          cd sources
+          mkdir -p storage/framework/{sessions,views,cache}
+          mkdir -p bootstrap/cache
+          chmod -R 775 storage bootstrap/cache
+          mkdir -p database
+          touch database/database.sqlite
 
-      - name: Copy environment file
-        run: cp .env.example .env
+      - name: Copy environment file & Set SQLite
+        run: |
+          cd sources
+          cp .env.example .env
+          sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env
+          sed -i 's/DB_DATABASE=.*/DB_DATABASE=database\/database.sqlite/' .env
+
+      - name: Install Composer dependencies
+        run: |
+          cd sources
+          composer install --prefer-dist --no-interaction --no-progress
 
       - name: Generate app key
-        run: php artisan key:generate
+        run: |
+          cd sources
+          php artisan key:generate
 
       - name: Execute tests
-        run: php artisan test
+        run: |
+          cd sources
+          php artisan test

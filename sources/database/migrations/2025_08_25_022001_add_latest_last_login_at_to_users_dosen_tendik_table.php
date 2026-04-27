@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users_dosen_tendik', function (Blueprint $table) {
-            $table->timestamp('last_login_at')->nullable()->after('isactive');
-        });
+        if (!Schema::hasColumn('users_dosen_tendik', 'last_login_at')) {
+            Schema::table('users_dosen_tendik', function (Blueprint $table) {
+                $table->timestamp('last_login_at')->nullable()->after('isactive');
+            });
+        }
     }
 
     /**
