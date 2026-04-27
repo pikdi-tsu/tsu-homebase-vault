@@ -58,10 +58,12 @@ class AppServiceProvider extends ServiceProvider
         Passport::refreshTokensExpireIn(now()->addDays(30)); // Refresh Token berlaku 30 hari
         Passport::personalAccessTokensExpireIn(now()->addMonths(6)); // Token pribadi berlaku 6 bulan
 
-        if (Schema::hasTable('permissions')) {
-            $permissions = Permission::all()->pluck('name')->toArray();
-            $scopes = array_fill_keys($permissions, 'Izin dinamis dari database');
-            Passport::tokensCan($scopes);
+        if (! $this->app->runningInConsole()) {
+            if (Schema::hasTable('permissions')) {
+                $permissions = Permission::all()->pluck('name')->toArray();
+                $scopes = array_fill_keys($permissions, 'Izin dinamis dari database');
+                Passport::tokensCan($scopes);
+            }
         }
 
         Event::listen(

@@ -43,18 +43,17 @@ jobs:
           mkdir -p database
           touch database/database.sqlite
 
-      - name: Install Composer dependencies
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: |
-          cd sources
-          composer install --prefer-dist --no-interaction --no-progress
-
-      - name: Copy environment file
+      - name: Copy environment file & Set SQLite
         run: |
           cd sources
           cp .env.example .env
+          sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env
+          sed -i 's/DB_DATABASE=.*/DB_DATABASE=database\/database.sqlite/' .env
+
+      - name: Install Composer dependencies
+        run: |
+          cd sources
+          composer install --prefer-dist --no-interaction --no-progress
 
       - name: Generate app key
         run: |
