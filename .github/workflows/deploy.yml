@@ -52,11 +52,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /domains/homebase.tsu.ac.id/public_html/sources
+            cd domains/homebase.tsu.ac.id/public_html/sources
             mkdir -p storage/framework/{sessions,views,cache}
             mkdir -p bootstrap/cache
             chmod -R 775 storage bootstrap/cache
-            composer install --no-dev --optimize-autoloader
+            /usr/local/bin/composer install --no-dev --optimize-autoloader
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
