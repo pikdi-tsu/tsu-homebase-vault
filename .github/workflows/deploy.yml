@@ -22,6 +22,13 @@ jobs:
         with:
           php-version: '8.4'
 
+      - name: Create Framework Directories
+        run: |
+          cd sources
+          mkdir -p storage/framework/{sessions,views,cache}
+          mkdir -p bootstrap/cache
+          chmod -R 775 storage bootstrap/cache
+
       - name: Install Dependencies (Composer)
         run: |
           cd sources
