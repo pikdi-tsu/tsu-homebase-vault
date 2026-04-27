@@ -49,8 +49,8 @@ jobs:
           # Kamu perlu nambahin secret SSH ini di repo GitHub kamu
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
           script: |
             cd /domains/homebase.tsu.ac.id/public_html/sources
             mkdir -p storage/framework/{sessions,views,cache}
