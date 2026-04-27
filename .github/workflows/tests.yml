@@ -40,10 +40,16 @@ jobs:
           composer install --prefer-dist --no-interaction --no-progress
 
       - name: Copy environment file
-        run: cp .env.example .env
+        run: |
+          cd sources
+          cp .env.example .env
 
       - name: Generate app key
-        run: php artisan key:generate
+        run: |
+          cd sources
+          php artisan key:generate
 
       - name: Execute tests
-        run: php artisan test
+        run: |
+          cd sources
+          php artisan test
