@@ -40,6 +40,8 @@ jobs:
           mkdir -p storage/framework/{sessions,views,cache}
           mkdir -p bootstrap/cache
           chmod -R 775 storage bootstrap/cache
+          mkdir -p database
+          touch database/database.sqlite
 
       - name: Install Composer dependencies
         run: |
