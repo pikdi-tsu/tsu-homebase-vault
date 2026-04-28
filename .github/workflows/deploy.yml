@@ -57,6 +57,8 @@ jobs:
             mkdir -p storage/framework/{sessions,views,cache}
             mkdir -p bootstrap/cache
             chmod -R 775 storage bootstrap/cache
+            mkdir -p resources/js
+            touch resources/js/custom-filament.js
             wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
             php composer.phar install --no-dev --optimize-autoloader
             php artisan migrate --force
