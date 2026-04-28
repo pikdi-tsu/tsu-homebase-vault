@@ -52,28 +52,14 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            set -e
+            echo "=== CEK KOORDINAT LOKASI ==="
+            pwd
             
-            echo "=== STEP 1: Masuk Sarang TSU Homebase ==="
-            cd domains/homebase.tsu.ac.id/public_html/sources
+            echo "=== CEK ISI FOLDER SAAT INI ==="
+            ls -la
             
-            echo "=== STEP 2: Siapin Folder Storage ==="
-            mkdir -p storage/framework/{sessions,views,cache}
-            mkdir -p bootstrap/cache
-            chmod -R 775 storage bootstrap/cache
+            echo "=== CEK APAKAH FOLDER SOURCES ADA? ==="
+            ls -la domains/homebase.tsu.ac.id/public_html/
             
-            echo "=== STEP 3: Download Composer ==="
-            wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
-            
-            echo "=== STEP 4: Install Library Vendor ==="
-            php composer.phar install --no-dev --optimize-autoloader
-            
-            echo "=== STEP 5: Migrate Database ==="
-            php artisan migrate --force
-            
-            echo "=== STEP 6: Optimasi Cache Laravel ==="
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            
-            echo "=== DEPLOYMENT 10 DETIK SELESAI BOSKU! ==="
+            echo "=== COBA MASUK FOLDER ==="
+            cd domains/homebase.tsu.ac.id/public_html/sources || echo "❌ GAGAL MASUK FOLDER!"
