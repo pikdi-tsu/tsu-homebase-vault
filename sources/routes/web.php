@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\RemoteAccessController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\HealthStatusPage;
+use Illuminate\Support\Facades\Session;
 use Spatie\Health\Models\HealthCheckResultHistoryItem;
 use App\Http\Controllers\Auth\CustomPasswordResetLinkController;
 use App\Http\Controllers\Auth\CustomNewPasswordController;
@@ -69,12 +71,12 @@ Route::middleware(['auth'])->group(function () {
         return app()->call([$controller, 'authorize']);
 
     });
-    Route::get('/logout', static function () {
+    Route::get('/sso/logout', static function () {
         Auth::logout();
         Session::invalidate();
         Session::regenerateToken();
         return redirect('/');
-    })->name('logout');
+    })->name('sso.logout');
     // Route "Jumper"
     Route::get('/status-sistem', HealthStatusPage::class)->name('health.status');
     Route::get('/jump-to-module/{module}', RemoteAccessController::class)->name('jump-to-module');
