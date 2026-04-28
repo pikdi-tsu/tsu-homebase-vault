@@ -46,20 +46,10 @@ jobs:
       - name: Execute Server Scripts via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          # Kamu perlu nambahin secret SSH ini di repo GitHub kamu
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
+          debug: true
           script: |
-            echo "=== CEK KOORDINAT LOKASI ==="
-            pwd
-            
-            echo "=== CEK ISI FOLDER SAAT INI ==="
-            ls -la
-            
-            echo "=== CEK APAKAH FOLDER SOURCES ADA? ==="
-            ls -la domains/homebase.tsu.ac.id/public_html/
-            
-            echo "=== COBA MASUK FOLDER ==="
-            cd domains/homebase.tsu.ac.id/public_html/sources || echo "❌ GAGAL MASUK FOLDER!"
+            whoami
