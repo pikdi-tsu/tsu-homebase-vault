@@ -53,14 +53,27 @@ jobs:
           port: 22
           script: |
             set -e
-            set -x
+            
+            echo "=== STEP 1: Masuk Sarang TSU Homebase ==="
             cd domains/homebase.tsu.ac.id/public_html/sources
+            
+            echo "=== STEP 2: Siapin Folder Storage ==="
             mkdir -p storage/framework/{sessions,views,cache}
             mkdir -p bootstrap/cache
             chmod -R 775 storage bootstrap/cache
-            wget -qO composer.phar https://getcomposer.org/download/latest-stable/composer.phar
-            php composer.phar install --no-dev --optimize-autoloader -v
+            
+            echo "=== STEP 3: Download Composer ==="
+            wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
+            
+            echo "=== STEP 4: Install Library Vendor ==="
+            php composer.phar install --no-dev --optimize-autoloader
+            
+            echo "=== STEP 5: Migrate Database ==="
             php artisan migrate --force
+            
+            echo "=== STEP 6: Optimasi Cache Laravel ==="
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+            
+            echo "=== DEPLOYMENT 10 DETIK SELESAI BOSKU! ==="
