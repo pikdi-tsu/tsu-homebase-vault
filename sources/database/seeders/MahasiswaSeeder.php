@@ -27,7 +27,6 @@ class MahasiswaSeeder extends Seeder
                 'username' => '25100001',
                 'name' => 'Mahasiswa Satu',
                 'password' => resolve(DefaultPasswordService::class)->getDefaultHashedPassword(),
-                'unit' => 'Fakultas Teknik',
                 'created_by' => $loggedAdmin,
             ]);
 
@@ -39,7 +38,6 @@ class MahasiswaSeeder extends Seeder
                 'username' => '25100002',
                 'name' => 'Mahasiswa Dua',
                 'password' => resolve(DefaultPasswordService::class)->getDefaultHashedPassword(),
-                'unit' => 'Fakultas Sains & Humaniora',
                 'created_by' => $loggedAdmin,
             ]);
 
@@ -51,7 +49,6 @@ class MahasiswaSeeder extends Seeder
                     'username' => '25100003',
                     'name' => 'Mahasiswa Tiga',
                     'password' => resolve(DefaultPasswordService::class)->getDefaultHashedPassword(),
-                    'unit' => 'Sekolah Vokasi',
                     'created_by' => $loggedAdmin,
                 ]);
 
