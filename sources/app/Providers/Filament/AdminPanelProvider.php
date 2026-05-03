@@ -56,7 +56,7 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-server'),
                 Action::make('logout')
                     ->label('Log Out')
-                    ->url(fn (): string => route('logout'))
+                    ->url(fn (): string => route('user.logout'))
                     ->icon('heroicon-o-arrow-left-on-rectangle'),
             ])
             ->colors([
@@ -94,7 +94,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                RoleMiddleware::class . ':admin|super admin',
+//                RoleMiddleware::class . ':admin|super admin',
             ])
             ->authMiddleware([
                 Authenticate::class,

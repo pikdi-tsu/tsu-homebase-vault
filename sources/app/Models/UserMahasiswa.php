@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +17,7 @@ use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Filament\Models\Contracts\HasAvatar;
 
-class UserMahasiswa extends Authenticatable implements OAuthenticatable, HasAvatar
+class UserMahasiswa extends Authenticatable implements OAuthenticatable, HasAvatar, FilamentUser
 {
 
     use HasApiTokens;
@@ -75,6 +77,11 @@ class UserMahasiswa extends Authenticatable implements OAuthenticatable, HasAvat
             'password' => 'hashed',
             'last_seen_at' => 'datetime',
         ];
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->hasAnyRole(['admin', 'super admin']);
     }
 
     public function getUserTypeAttribute(): string
