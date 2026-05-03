@@ -71,12 +71,12 @@ Route::middleware(['auth'])->group(function () {
         return app()->call([$controller, 'authorize']);
 
     });
-    Route::get('/sso/logout', static function () {
+    Route::get('/user/logout', static function () {
         Auth::logout();
         Session::invalidate();
         Session::regenerateToken();
         return redirect('/');
-    })->name('sso.logout');
+    })->name('user.logout');
     // Route "Jumper"
     Route::get('/status-sistem', HealthStatusPage::class)->name('health.status');
     Route::get('/jump-to-module/{module}', RemoteAccessController::class)->name('jump-to-module');

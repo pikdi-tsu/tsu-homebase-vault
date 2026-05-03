@@ -9,6 +9,7 @@ use App\Http\Responses\LoginResponse;
 use App\Models\Passport\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use App\Listeners\CheckUserRoleAfterLogin;
 use Filament\Support\Assets\Js;
@@ -57,6 +58,10 @@ class AppServiceProvider extends ServiceProvider
         Passport::tokensExpireIn(now()->addHours(8)); // Access Token berlaku 8 jam
         Passport::refreshTokensExpireIn(now()->addDays(30)); // Refresh Token berlaku 30 hari
         Passport::personalAccessTokensExpireIn(now()->addMonths(6)); // Token pribadi berlaku 6 bulan
+
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
 
         if (! $this->app->runningInConsole()) {
             if (Schema::hasTable('permissions')) {
