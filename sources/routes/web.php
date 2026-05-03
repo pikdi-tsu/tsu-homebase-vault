@@ -15,20 +15,22 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     //
 });
 
+Route::get('/', static fn() => redirect()->route('dashboard'));
+
+Route::get('/dashboard', static function () {
+    // Dapatkan UUID dari batch pemeriksaan terakhir
+    $latestBatch = HealthCheckResultHistoryItem::query()->latest()->value('batch');
+
+    // Dapatkan semua hasil pemeriksaan dari batch terakhir tersebut
+    $latestChecks = HealthCheckResultHistoryItem::query()->where('batch', $latestBatch)->get();
+
+    // Cek status 'failed' di dalam batch terakhir
+    $isSystemOk = !$latestChecks->contains(fn ($check) => $check->status !== 'ok');
+
+    return view('dashboard', ['isSystemOk' => $isSystemOk]);
+})->name('dashboard');
+
 Route::middleware(['guest'])->group(function () {
-    Route::get('/', static fn() => redirect()->route('dashboard'));
-    Route::get('/dashboard', static function () {
-        // Dapatkan UUID dari batch pemeriksaan terakhir
-        $latestBatch = HealthCheckResultHistoryItem::query()->latest()->value('batch');
-
-        // Dapatkan semua hasil pemeriksaan dari batch terakhir tersebut
-        $latestChecks = HealthCheckResultHistoryItem::query()->where('batch', $latestBatch)->get();
-
-        // Cek status 'failed' di dalam batch terakhir
-        $isSystemOk = !$latestChecks->contains(fn ($check) => $check->status !== 'ok');
-
-        return view('dashboard', ['isSystemOk' => $isSystemOk]);
-    })->name('dashboard');
     Route::get('/admin/{any}', static function () {
         // Skenario 1: Jika user belum login (guest)
         if (Auth::guest()) {
