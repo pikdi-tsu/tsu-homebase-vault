@@ -15,6 +15,17 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install NPM dependencies & Build Assets
+        run: |
+          cd sources 
+          npm install
+          npm run build
+
       - name: Sync files to DirectAdmin (Source Code Only)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.3
         with:
@@ -61,7 +72,6 @@ jobs:
             touch resources/js/custom-filament.js
             wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
             php composer.phar install --no-dev --optimize-autoloader
-            php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
