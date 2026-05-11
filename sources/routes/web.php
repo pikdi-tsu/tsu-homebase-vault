@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\HealthStatusPage;
 use Illuminate\Support\Facades\Session;
+use Laravel\Passport\Client;
+use Laravel\Passport\Http\Controllers\AuthorizationController;
 use Spatie\Health\Models\HealthCheckResultHistoryItem;
 use App\Http\Controllers\Auth\CustomPasswordResetLinkController;
 use App\Http\Controllers\Auth\CustomNewPasswordController;
@@ -47,7 +49,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/oauth/authorize', static function (Request $request) {
         // Cek client reevoked
         $clientId = $request->query('client_id');
-        $client = DB::table('oauth_clients')->where('id', $clientId)->first();
+        $client = Client::find($clientId);
+
         if (!$client || $client->revoked) {
             return response()->view('errors.index', [
                 'message' => 'Maaf, Akses Aplikasi ini telah DIBEKUKAN atau DICABUT oleh PIKDI TSU.',
@@ -58,7 +61,6 @@ Route::middleware(['auth'])->group(function () {
         // Cek user disabled
         $user = $request->user();
         if ($user && !$user->isactive) {
-
             return response()->view('errors.index', [
                 'title' => 'Akun Non-Aktif',
                 'message' => 'Mohon maaf, Akun TSU Anda saat ini sedang DINONAKTIFKAN. Silakan hubungi Bagian SDM/PIKDI.',
@@ -67,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
         }
 
         // "Hidupkan" Controller-nya (Resolve Instance)
-        $controller = app(\Laravel\Passport\Http\Controllers\AuthorizationController::class);
+        $controller = app(AuthorizationController::class);
 
         // Laravel otomatis mengisikan parameter yang kurang (Request, Response, dll)
         return app()->call([$controller, 'authorize']);
