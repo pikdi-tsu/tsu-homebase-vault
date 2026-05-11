@@ -1,0 +1,1 @@
+window.addEventListener("copy-to-clipboard",i=>{i.detail.token&&(navigator.clipboard.writeText(i.detail.token),new FilamentNotification().title("Token berhasil disalin ke clipboard!").success().send())});
