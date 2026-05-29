@@ -27,6 +27,8 @@ use Spatie\Health\Checks\Checks\ScheduleCheck;
 use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
 use Spatie\Health\Facades\Health;
 use Spatie\Permission\Models\Permission;
+use Livewire\Livewire;
+use Illuminate\Support\Facades\Route;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -46,6 +48,14 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::before(static function ($user, $ability) {
             return $user->hasRole('super admin') ? true : null;
+        });
+
+        Livewire::setUpdateRoute(function ($handle) {
+            return Route::post(env('LIVEWIRE_UPDATE_PATH', '/livewire/update'), $handle);
+        });
+
+        Livewire::setScriptRoute(function ($handle) {
+            return Route::get(env('LIVEWIRE_SCRIPT_PATH', '/livewire/livewire.js'), $handle);
         });
 
         Auth::provider('smart_eloquent', static function ($app, array $config) {
