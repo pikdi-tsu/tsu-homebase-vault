@@ -50,28 +50,29 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('super admin') ? true : null;
         });
 
-        if (env('APP_ENV') !== 'local') {
-            $appUrl = config('app.url');
+        $appUrl = config('app.url'); 
+        $isHttps = str_starts_with($appUrl, 'https://');
 
-            if (str_starts_with($appUrl, 'https://')) {
-                URL::forceScheme('https');
-            } else {
-                URL::forceScheme('http');
-            }
-
-            $subfolder = rtrim(parse_url($appUrl, PHP_URL_PATH) ?? '', '/');
-
-            // Arahkan jalur AJAX Livewire ke dalam subfolder
-            Livewire::setUpdateRoute(function ($handle) use ($subfolder) {
-                return Route::post($subfolder . '/livewire/update', $handle);
-            });
-
-            // Arahkan jalur Script Livewire ke dalam subfolder
-            Livewire::setScriptRoute(function ($handle) use ($subfolder) {
-                return Route::get($subfolder . '/livewire/livewire.js', $handle);
-            });
+        if ($isHttps) {
+            // Untuk Lokal (Laragon SSL) & Server Prod (Domain Resmi SSL)
+            URL::forceScheme('https');
+            request()->server->set('HTTPS', 'on'); 
+        } else {
+            // Untuk VPS Dev 202 (IP Address, Tanpa SSL)
+            URL::forceScheme('http');
+            request()->server->set('HTTPS', 'off');
+            request()->server->set('SERVER_PORT', 80);
         }
         
+        $subfolder = rtrim(parse_url($appUrl, PHP_URL_PATH) ?? '', '/');
+
+        Livewire::setUpdateRoute(function ($handle) use ($subfolder) {
+            return Route::post($subfolder . '/livewire/update', $handle)->middleware('web');
+        });
+
+        Livewire::setScriptRoute(function ($handle) use ($subfolder) {
+            return Route::get($subfolder . '/livewire/livewire.js', $handle);
+        });
 
         Auth::provider('smart_eloquent', static function ($app, array $config) {
             return new SmartUserProvider($app['hash'], $config['model']);
