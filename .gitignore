@@ -55,6 +55,6 @@ sources/yarn-error.log
 *.tar.gz
 
 # --- FOLDER PUBLIC (Di Luar Sources) ---
-storage
-hot
-# build (Hapus tanda # jika Anda TIDAK ingin aset Vite masuk ke repo Git)
+/storage
+/hot
+# /build (Hapus tanda # jika Anda TIDAK ingin aset Vite masuk ke repo Git)
