@@ -51,14 +51,17 @@ class AppServiceProvider extends ServiceProvider
         });
 
         if (env('APP_ENV') !== 'local') {
+            $appUrl = config('app.url');
+            $subfolder = rtrim(parse_url($appUrl, PHP_URL_PATH) ?? '', '/');
+
             // Arahkan jalur AJAX Livewire ke dalam subfolder
-            Livewire::setUpdateRoute(function ($handle) {
-                return Route::post(env('LIVEWIRE_UPDATE_PATH', '/livewire/update'), $handle);
+            Livewire::setUpdateRoute(function ($handle) use ($subfolder) {
+                return Route::post($subfolder . '/livewire/update', $handle);
             });
 
             // Arahkan jalur Script Livewire ke dalam subfolder
-            Livewire::setScriptRoute(function ($handle) {
-                return Route::get(env('LIVEWIRE_SCRIPT_PATH', '/livewire/livewire.js'), $handle);
+            Livewire::setScriptRoute(function ($handle) use ($subfolder) {
+                return Route::get($subfolder . '/livewire/livewire.js', $handle);
             });
         }
         
