@@ -45,13 +45,13 @@ Ikuti langkah berikut untuk mengatur lingkungan pengembangan lokal. **PENTING:**
 
 1. **Clone Repository**
    ```bash
-   git clone <repository_url> tsu-homebase
+   git clone <repository_url> tsu-homebase-vault
    ```
 
 2. **Install Dependensi Backend (Composer)**
    Masuk ke direktori `sources/` dan jalankan instalasi. Pastikan menjalankan `dump-autoload` agar *namespace* aplikasi terbaca dengan benar.
    ```bash
-   cd tsu-homebase/sources
+   cd tsu-homebase-vault/sources
    composer install
    composer dump-autoload
    ```
