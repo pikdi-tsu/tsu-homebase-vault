@@ -52,6 +52,13 @@ class AppServiceProvider extends ServiceProvider
 
         if (env('APP_ENV') !== 'local') {
             $appUrl = config('app.url');
+
+            if (str_starts_with($appUrl, 'https://')) {
+                URL::forceScheme('https');
+            } else {
+                URL::forceScheme('http');
+            }
+
             $subfolder = rtrim(parse_url($appUrl, PHP_URL_PATH) ?? '', '/');
 
             // Arahkan jalur AJAX Livewire ke dalam subfolder
