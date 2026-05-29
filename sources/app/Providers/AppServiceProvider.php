@@ -50,13 +50,24 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('super admin') ? true : null;
         });
 
-        Livewire::setUpdateRoute(function ($handle) {
-            return Route::post(env('LIVEWIRE_UPDATE_PATH', '/livewire/update'), $handle);
-        });
+        if (env('APP_ENV') !== 'local') {
+            
+            // 1. Kunci Root URL untuk mencegah Ghost 405 pas Logout
+            if (env('APP_URL')) {
+                URL::forceRootUrl(env('APP_URL'));
+            }
 
-        Livewire::setScriptRoute(function ($handle) {
-            return Route::get(env('LIVEWIRE_SCRIPT_PATH', '/livewire/livewire.js'), $handle);
-        });
+            // 2. Arahkan jalur AJAX Livewire ke dalam subfolder
+            Livewire::setUpdateRoute(function ($handle) {
+                return Route::post(env('LIVEWIRE_UPDATE_PATH', '/livewire/update'), $handle);
+            });
+
+            // 3. Arahkan jalur Script Livewire ke dalam subfolder
+            Livewire::setScriptRoute(function ($handle) {
+                return Route::get(env('LIVEWIRE_SCRIPT_PATH', '/livewire/livewire.js'), $handle);
+            });
+        }
+        
 
         Auth::provider('smart_eloquent', static function ($app, array $config) {
             return new SmartUserProvider($app['hash'], $config['model']);
