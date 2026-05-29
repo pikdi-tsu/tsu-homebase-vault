@@ -51,18 +51,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         if (env('APP_ENV') !== 'local') {
-            
-            // 1. Kunci Root URL untuk mencegah Ghost 405 pas Logout
-            if (env('APP_URL')) {
-                URL::forceRootUrl(env('APP_URL'));
-            }
-
-            // 2. Arahkan jalur AJAX Livewire ke dalam subfolder
+            // Arahkan jalur AJAX Livewire ke dalam subfolder
             Livewire::setUpdateRoute(function ($handle) {
                 return Route::post(env('LIVEWIRE_UPDATE_PATH', '/livewire/update'), $handle);
             });
 
-            // 3. Arahkan jalur Script Livewire ke dalam subfolder
+            // Arahkan jalur Script Livewire ke dalam subfolder
             Livewire::setScriptRoute(function ($handle) {
                 return Route::get(env('LIVEWIRE_SCRIPT_PATH', '/livewire/livewire.js'), $handle);
             });
