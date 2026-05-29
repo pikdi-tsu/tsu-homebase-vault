@@ -7,7 +7,7 @@ on:
       - development
   pull_request:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 permissions:
   contents: read
@@ -43,22 +43,27 @@ jobs:
           mkdir -p database
           touch database/database.sqlite
 
-      - name: Copy environment file & Set SQLite
+      - name: Copy environment file & Set Config
         run: |
           cd sources
           cp .env.example .env
           sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env
           sed -i 's/DB_DATABASE=.*/DB_DATABASE=database\/database.sqlite/' .env
+          # Suntik URL localhost biar Guzzle HTTP nggak panic
+          sed -i 's/^APP_URL=.*/APP_URL=http:\/\/localhost/' .env
 
       - name: Install Composer dependencies
         run: |
           cd sources
-          composer install --prefer-dist --no-interaction --no-progress
+          # Tambahkan --no-scripts biar Composer nggak langsung nge-boot Laravel
+          composer install --prefer-dist --no-interaction --no-progress --no-scripts
 
-      - name: Generate app key
+      - name: Generate app key & Discover Packages
         run: |
           cd sources
           php artisan key:generate
+          # Jalankan discover secara manual setelah env aman
+          php artisan package:discover
 
       - name: Execute tests
         run: |

@@ -27,6 +27,8 @@ use Spatie\Health\Checks\Checks\ScheduleCheck;
 use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
 use Spatie\Health\Facades\Health;
 use Spatie\Permission\Models\Permission;
+use Livewire\Livewire;
+use Illuminate\Support\Facades\Route;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -48,6 +50,22 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('super admin') ? true : null;
         });
 
+        if (env('APP_ENV') !== 'local') {
+            $appUrl = config('app.url');
+            $subfolder = rtrim(parse_url($appUrl, PHP_URL_PATH) ?? '', '/');
+
+            // Arahkan jalur AJAX Livewire ke dalam subfolder
+            Livewire::setUpdateRoute(function ($handle) use ($subfolder) {
+                return Route::post($subfolder . '/livewire/update', $handle)->middleware('web');
+            });
+
+            // Arahkan jalur Script Livewire ke dalam subfolder
+            Livewire::setScriptRoute(function ($handle) use ($subfolder) {
+                return Route::get($subfolder . '/livewire/livewire.js', $handle);
+            });
+        }
+        
+
         Auth::provider('smart_eloquent', static function ($app, array $config) {
             return new SmartUserProvider($app['hash'], $config['model']);
         });
@@ -59,7 +77,7 @@ class AppServiceProvider extends ServiceProvider
         Passport::refreshTokensExpireIn(now()->addDays(30)); // Refresh Token berlaku 30 hari
         Passport::personalAccessTokensExpireIn(now()->addMonths(6)); // Token pribadi berlaku 6 bulan
 
-        if (app()->environment('production')) {
+        if (config('app.env') === 'production' && env('FORCE_HTTPS', false)) {
             URL::forceScheme('https');
         }
 

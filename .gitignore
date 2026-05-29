@@ -27,19 +27,34 @@ sources/node_modules/
 sources/storage/*.key
 sources/storage/oauth-*.key
 
-# > Log & Cache Laravel
-sources/storage/logs/*.log
-sources/storage/framework/views/*.php
+# > Log & Cache Laravel (Termasuk Filament & Spatie)
+sources/storage/logs/*
+sources/storage/framework/views/*
 sources/storage/framework/cache/data/*
 sources/storage/framework/sessions/*
 sources/storage/framework/testing/*
+sources/bootstrap/cache/*
+
+# > Pengecualian agar folder cache/log tidak hilang dari Git
+!sources/storage/logs/.gitignore
+!sources/storage/framework/views/.gitignore
+!sources/storage/framework/cache/data/.gitignore
+!sources/storage/framework/sessions/.gitignore
+!sources/storage/framework/testing/.gitignore
+!sources/bootstrap/cache/.gitignore
 
 # > Lain-lain
 sources/.phpunit.result.cache
+sources/.phpunit.cache
 sources/npm-debug.log
 sources/yarn-error.log
 
-# --- 4. FOLDER PUBLIC (Di Luar Sources) ---
-storage
-hot
-# build
+# --- SPATIE BACKUP / FILE DUMP ---
+*.sql
+*.zip
+*.tar.gz
+
+# --- FOLDER PUBLIC (Di Luar Sources) ---
+/storage
+/hot
+# /build (Hapus tanda # jika Anda TIDAK ingin aset Vite masuk ke repo Git)
