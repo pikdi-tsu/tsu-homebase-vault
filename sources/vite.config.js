@@ -14,7 +14,7 @@ export default defineConfig({
             ],
             refresh: true,
             publicDirectory: '../',
-            buildDirectory: '../build',
+            buildDirectory: 'build',
         }),
     ],
 });
