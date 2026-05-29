@@ -50,29 +50,21 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('super admin') ? true : null;
         });
 
-        $appUrl = config('app.url'); 
-        $isHttps = str_starts_with($appUrl, 'https://');
+        if (env('APP_ENV') !== 'local') {
+            $appUrl = config('app.url');
+            $subfolder = rtrim(parse_url($appUrl, PHP_URL_PATH) ?? '', '/');
 
-        if ($isHttps) {
-            // Untuk Lokal (Laragon SSL) & Server Prod (Domain Resmi SSL)
-            URL::forceScheme('https');
-            request()->server->set('HTTPS', 'on'); 
-        } else {
-            // Untuk VPS Dev 202 (IP Address, Tanpa SSL)
-            URL::forceScheme('http');
-            request()->server->set('HTTPS', 'off');
-            request()->server->set('SERVER_PORT', 80);
+            // Arahkan jalur AJAX Livewire ke dalam subfolder
+            Livewire::setUpdateRoute(function ($handle) use ($subfolder) {
+                return Route::post($subfolder . '/livewire/update', $handle)->middleware('web');
+            });
+
+            // Arahkan jalur Script Livewire ke dalam subfolder
+            Livewire::setScriptRoute(function ($handle) use ($subfolder) {
+                return Route::get($subfolder . '/livewire/livewire.js', $handle);
+            });
         }
         
-        $subfolder = rtrim(parse_url($appUrl, PHP_URL_PATH) ?? '', '/');
-
-        Livewire::setUpdateRoute(function ($handle) use ($subfolder) {
-            return Route::post($subfolder . '/livewire/update', $handle)->middleware('web');
-        });
-
-        Livewire::setScriptRoute(function ($handle) use ($subfolder) {
-            return Route::get($subfolder . '/livewire/livewire.js', $handle);
-        });
 
         Auth::provider('smart_eloquent', static function ($app, array $config) {
             return new SmartUserProvider($app['hash'], $config['model']);
@@ -85,7 +77,7 @@ class AppServiceProvider extends ServiceProvider
         Passport::refreshTokensExpireIn(now()->addDays(30)); // Refresh Token berlaku 30 hari
         Passport::personalAccessTokensExpireIn(now()->addMonths(6)); // Token pribadi berlaku 6 bulan
 
-        if (app()->environment('production')) {
+        if (config('app.env') === 'production' && env('FORCE_HTTPS', false)) {
             URL::forceScheme('https');
         }
 
