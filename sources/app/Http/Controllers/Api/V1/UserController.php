@@ -14,8 +14,8 @@ class UserController extends Controller
     public function getUsers(Request $request)
     {
         // Oauth security Check
-        $secret = config('app.pikdi.key.sync');
-        if ($request->header('X-Sync-Secret') !== $secret) {
+        $plainSecret = config('pikdi.key.sync');
+        if (!Hash::check($plainSecret, $request->header('X-Sync-Secret'))) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -110,6 +110,77 @@ class UserController extends Controller
             'total'  => $finalData->count(),
             'data'   => $finalData->values()
         ]);
+    }
+
+    public function toggleStatus(Request $request)
+    {
+        // Oauth security Check
+        $plainSecret = config('pikdi.key.sync');
+        if (!Hash::check($plainSecret, $request->header('X-Sync-Secret'))) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+                'data' => null,
+                'errors' => 'Invalid Sync Secret'
+            ], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|string',
+            'isactive' => 'required|boolean',
+            'user_type' => 'nullable|string|in:dosen_tendik,mahasiswa'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'data' => null,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $type = $request->input('user_type', 'dosen_tendik');
+        $userId = $request->input('id');
+        $isActive = $request->input('isactive');
+
+        if ($type === 'mahasiswa') {
+            $user = UserMahasiswa::find($userId);
+        } else {
+            $user = UserDosenTendik::find($userId);
+        }
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User tidak ditemukan',
+                'data' => null,
+                'errors' => 'User not found'
+            ], 404);
+        }
+
+        try {
+            $user->isactive = $isActive;
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status user berhasil diperbarui.',
+                'data' => [
+                    'id' => $userId,
+                    'isactive' => (bool)$isActive,
+                    'user_type' => $type
+                ],
+                'errors' => null
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui status user',
+                'data' => null,
+                'errors' => config('app.debug') ? $e->getMessage() : 'Server Error'
+            ], 500);
+        }
     }
 
     // Method untuk mendapatkan model yang benar berdasarkan request
