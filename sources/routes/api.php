@@ -57,6 +57,7 @@ Route::prefix('v1')->group(function () {
 
         // Sync Users
         Route::match(['get', 'post'],'users/sync', [UserController::class, 'getUsers']);
+        Route::post('users/toggle-status', [UserController::class, 'toggleStatus']);
 
         // Sync Roles (General Scope)
         Route::get('roles/sync-list', [RoleController::class, 'syncList']);
