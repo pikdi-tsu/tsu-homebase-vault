@@ -38,7 +38,12 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
-        $this->app->usePublicPath(base_path('../'));
+        
+        if (env('APP_ENV') === 'production' && !is_dir(base_path('../sources'))) {
+            $this->app->usePublicPath(base_path('../public_html'));
+        } else {
+            $this->app->usePublicPath(base_path('../'));
+        }
     }
 
     /**

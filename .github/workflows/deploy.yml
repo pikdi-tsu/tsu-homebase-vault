@@ -15,13 +15,14 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Sync files to DirectAdmin (Source Code Only)
+      - name: Sync Core files to DirectAdmin
         uses: SamKirkland/FTP-Deploy-Action@v4.3.3
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /domains/homebase.tsu.ac.id/public_html/
+          local-dir: sources/
+          server-dir: /domains/homebase.tsu.ac.id/tsu_homebase_core/
           exclude: |
             **/.git*
             **/.git*/**
@@ -29,19 +30,37 @@ jobs:
             README.md
             *.sqlite
             phpunit.xml
-            sources/vendor/**
-            sources/resources/css/**
-            sources/resources/js/**
-            sources/vite.config.js
-            sources/tailwind.config.js
-            sources/postcss.config.js
-            sources/package.json
-            sources/package-lock.json
+            vendor/**
+            resources/css/**
+            resources/js/**
+            vite.config.js
+            tailwind.config.js
+            postcss.config.js
+            package.json
+            package-lock.json
             node_modules/**
             .idea/**
             .vscode/**
             .DS_Store
-            sources/storage/logs/*.log
+            storage/logs/*.log
+
+      - name: Sync Public files to DirectAdmin
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.3
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: /domains/homebase.tsu.ac.id/public_html/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            README.md
+            sources/**
+            .idea/**
+            .vscode/**
+            .DS_Store
 
       - name: Execute Server Scripts via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -53,7 +72,7 @@ jobs:
           debug: true
           script: |
             set -e
-            cd domains/homebase.tsu.ac.id/public_html/sources
+            cd domains/homebase.tsu.ac.id/tsu_homebase_core
             mkdir -p storage/framework/{sessions,views,cache}
             mkdir -p bootstrap/cache
             chmod -R 775 storage bootstrap/cache
@@ -61,6 +80,6 @@ jobs:
             touch resources/js/custom-filament.js
             wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
             php composer.phar install --no-dev --optimize-autoloader
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
+            php artisan optimize:clear
+            php artisan optimize
+            php artisan storage:link
