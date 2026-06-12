@@ -33,7 +33,7 @@ Route::get('/dashboard', static function () {
 })->name('dashboard');
 
 Route::middleware(['guest'])->group(function () {
-    Route::get('/admin/{any}', static function () {
+    Route::any('/admin/{any}', static function () {
         // Skenario 1: Jika user belum login (guest)
         if (Auth::guest()) {
             return redirect()->route('login');
@@ -75,7 +75,7 @@ Route::middleware(['auth'])->group(function () {
         return app()->call([$controller, 'authorize']);
 
     });
-    Route::get('/user/logout', static function () {
+    Route::any('/user/logout', static function () {
         Auth::logout();
         Session::invalidate();
         Session::regenerateToken();
