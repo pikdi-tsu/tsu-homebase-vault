@@ -16,25 +16,14 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Sync Core files to VPS (Rsync over SSH)
+      - name: Sync files to VPS (Rsync over SSH)
         uses: easingthemes/ssh-deploy@main
         with:
           SSH_PRIVATE_KEY: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.DEV_SSH_HOST }}
           REMOTE_USER: ${{ secrets.DEV_SSH_USERNAME }}
-          SOURCE: "sources/"
-          TARGET: /var/www/html/tsu_homebase_core/
-          EXCLUDE: "/.git/, /.github/, /node_modules/, *.sqlite, /vendor/"
-
-      - name: Sync Public files to VPS (Rsync over SSH)
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.DEV_SSH_HOST }}
-          REMOTE_USER: ${{ secrets.DEV_SSH_USERNAME }}
-          SOURCE: "./"
           TARGET: /var/www/html/tsu_homebase/
-          EXCLUDE: "/.git/, /.github/, /sources/, /node_modules/"
+          EXCLUDE: "/.git/, /.github/, /sources/node_modules/, *.sqlite, /sources/vendor/"
 
       - name: Execute Post-Deploy Scripts via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -46,7 +35,7 @@ jobs:
           script: |
             set -e
             # Melompat tepat ke jantung aplikasi
-            cd /var/www/html/tsu_homebase_core
+            cd /var/www/html/tsu_homebase/sources 
 
             # Pastikan folder penyimpanan ada secara eksplisit
             mkdir -p storage/framework/{sessions,views,cache}
