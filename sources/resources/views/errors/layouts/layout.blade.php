@@ -34,7 +34,7 @@
 
 <div class="min-h-screen flex flex-col items-center justify-center text-center px-4">
     <div class="mb-6">
-        <a href="{{ route('dashboard') }}" class="flex justify-center transform hover:scale-105 transition-transform duration-300">
+        <a href="{{ url('/dashboard') }}" class="flex justify-center transform hover:scale-105 transition-transform duration-300">
             <img src="{{ asset('images/icon-logo-tsu.png') }}" alt="Ikon Tiga Serangkai University" width="60px" />
         </a>
     </div>
@@ -59,7 +59,7 @@
 
     <p class="mt-8 text-gray-500 dark:text-gray-300">
         Kembali ke Halaman Sebelumnya atau
-        <a href="{{ route('dashboard') }}" class="text-blue-500 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300 transition-colors">Dashboard TSU Homebase</a>
+        <a href="{{ url('/dashboard') }}" class="text-blue-500 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300 transition-colors">Dashboard TSU Homebase</a>
     </p>
 </div>
 

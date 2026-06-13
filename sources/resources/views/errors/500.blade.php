@@ -45,7 +45,7 @@
 
 <div class="min-h-screen flex flex-col items-center justify-center text-center px-4">
     <div class="mb-6">
-        <a href="{{ route('dashboard') }}" class="flex justify-center">
+        <a href="{{ url('/dashboard') }}" class="flex justify-center">
             <img src="{{ asset('images/icon-logo-tsu.png') }}" alt="Ikon Tiga Serangkai University" width="40px" />
         </a>
     </div>
