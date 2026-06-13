@@ -64,12 +64,20 @@ jobs:
 
       - name: Execute Server Scripts via SSH
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           debug: true
+          envs: APP_URL,DB_HOST,DB_PORT,DB_DATABASE,DB_USERNAME,DB_PASSWORD
           script: |
             set -e
             cd domains/homebase.tsu.ac.id/tsu_homebase_core
@@ -78,8 +86,27 @@ jobs:
             chmod -R 775 storage bootstrap/cache
             mkdir -p resources/js
             touch resources/js/custom-filament.js
+            
             wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
-            php composer.phar install --no-dev --optimize-autoloader
+            export COMPOSER_ALLOW_SUPERUSER=1
+            php composer.phar install --ignore-platform-reqs --no-dev --optimize-autoloader
+            
+            if [ ! -f .env ]; then cp .env.example .env; fi
+            touch database/database.sqlite
+            
+            # Set Config otomatis via Secrets
+            if [ -n "$APP_URL" ]; then sed -i "s|^APP_URL=.*|APP_URL=$APP_URL|" .env; fi
+            if [ -n "$DB_HOST" ]; then sed -i "s|^DB_HOST=.*|DB_HOST=$DB_HOST|" .env; fi
+            if [ -n "$DB_PORT" ]; then sed -i "s|^DB_PORT=.*|DB_PORT=$DB_PORT|" .env; fi
+            if [ -n "$DB_DATABASE" ]; then sed -i "s|^DB_DATABASE=.*|DB_DATABASE=$DB_DATABASE|" .env; fi
+            if [ -n "$DB_USERNAME" ]; then sed -i "s|^DB_USERNAME=.*|DB_USERNAME=$DB_USERNAME|" .env; fi
+            if [ -n "$DB_PASSWORD" ]; then sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=$DB_PASSWORD|" .env; fi
+
+            # Generate APP_KEY jika masih kosong
+            if grep -q "^APP_KEY=$" .env; then
+                php artisan key:generate --force
+            fi
+
             php artisan optimize:clear
             php artisan optimize
             php artisan storage:link
