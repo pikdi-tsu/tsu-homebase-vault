@@ -87,12 +87,16 @@ jobs:
             mkdir -p resources/js
             touch resources/js/custom-filament.js
             
-            wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
-            export COMPOSER_ALLOW_SUPERUSER=1
-            php composer.phar install --ignore-platform-reqs --no-dev --optimize-autoloader
-            
             if [ ! -f .env ]; then cp .env.example .env; fi
             touch database/database.sqlite
+            
+            # Bersihkan variabel Secrets dari karakter spasi/enter tersembunyi (CR/LF)
+            APP_URL=$(echo "$APP_URL" | tr -d '\r\n ')
+            DB_HOST=$(echo "$DB_HOST" | tr -d '\r\n ')
+            DB_PORT=$(echo "$DB_PORT" | tr -d '\r\n ')
+            DB_DATABASE=$(echo "$DB_DATABASE" | tr -d '\r\n ')
+            DB_USERNAME=$(echo "$DB_USERNAME" | tr -d '\r\n ')
+            DB_PASSWORD=$(echo "$DB_PASSWORD" | tr -d '\r\n ')
             
             # Set Config otomatis via Secrets
             if [ -n "$APP_URL" ]; then sed -i "s|^APP_URL=.*|APP_URL=$APP_URL|" .env; fi
@@ -101,6 +105,10 @@ jobs:
             if [ -n "$DB_DATABASE" ]; then sed -i "s|^DB_DATABASE=.*|DB_DATABASE=$DB_DATABASE|" .env; fi
             if [ -n "$DB_USERNAME" ]; then sed -i "s|^DB_USERNAME=.*|DB_USERNAME=$DB_USERNAME|" .env; fi
             if [ -n "$DB_PASSWORD" ]; then sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=$DB_PASSWORD|" .env; fi
+            
+            wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
+            export COMPOSER_ALLOW_SUPERUSER=1
+            php composer.phar install --ignore-platform-reqs --no-dev --optimize-autoloader
 
             # Generate APP_KEY jika masih kosong
             if grep -q "^APP_KEY=$" .env; then
