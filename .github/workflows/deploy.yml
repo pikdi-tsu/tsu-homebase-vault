@@ -115,6 +115,13 @@ jobs:
                 php artisan key:generate --force
             fi
 
+            # Optimasi Framework
             php artisan optimize:clear
             php artisan optimize
+            php artisan view:cache
+            php artisan filament:optimize
             php artisan storage:link
+            
+            # Memastikan hak akses folder cache dan log aman SETELAH semua file tergenerate
+            chown -R www-data:www-data storage bootstrap/cache
+            chmod -R 775 storage bootstrap/cache
