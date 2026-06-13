@@ -76,11 +76,6 @@ jobs:
             export COMPOSER_ALLOW_SUPERUSER=1
             php composer.phar install --ignore-platform-reqs --no-interaction --prefer-dist --optimize-autoloader
 
-            # Memastikan hak akses folder cache dan log aman. 
-            # (Jika server 202 pakai user 'bertha' untuk web servernya, ganti www-data menjadi bertha)
-            chown -R www-data:www-data storage bootstrap/cache
-            chmod -R 775 storage bootstrap/cache
-
             # Generate APP_KEY jika masih kosong
             if grep -q "^APP_KEY=$" .env; then
                 php artisan key:generate --force
@@ -95,3 +90,7 @@ jobs:
 
             # Migrasi Database
             php artisan migrate --force
+
+            # Memastikan hak akses folder cache dan log aman SETELAH semua file tergenerate
+            chown -R www-data:www-data storage bootstrap/cache
+            chmod -R 775 storage bootstrap/cache
