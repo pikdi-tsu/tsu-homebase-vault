@@ -33,14 +33,6 @@ Route::get('/dashboard', static function () {
 })->name('dashboard');
 
 Route::middleware(['guest'])->group(function () {
-    Route::any('/admin/{any}', static function () {
-        // Skenario 1: Jika user belum login (guest)
-        if (Auth::guest()) {
-            return redirect()->route('login');
-        }
-        // Skenario 2: Jika user sudah login (tapi bukan admin)
-        return redirect()->route('dashboard');
-    })->where('any', '.*')->name('admin.fallback');
     Route::post('/forgot-password', [CustomPasswordResetLinkController::class, 'store'])->name('password.email');
     Route::post('/reset-password', [CustomNewPasswordController::class, 'store'])->name('password.update');
 });

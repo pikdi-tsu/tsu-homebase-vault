@@ -56,8 +56,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         if (env('APP_ENV') !== 'local') {
-            $appUrl = config('app.url');
-            $subfolder = rtrim(parse_url($appUrl, PHP_URL_PATH) ?? '', '/');
+            $appUrl = config('app.url') ?? '';
+            $parsedUrl = parse_url($appUrl, PHP_URL_PATH);
+            $subfolder = is_string($parsedUrl) ? rtrim($parsedUrl, '/') : '';
 
             // Arahkan jalur AJAX Livewire ke dalam subfolder
             Livewire::setUpdateRoute(function ($handle) use ($subfolder) {
