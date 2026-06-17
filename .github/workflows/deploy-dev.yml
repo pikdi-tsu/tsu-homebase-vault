@@ -30,6 +30,7 @@ jobs:
         env:
           APP_NAME: ${{ secrets.DEV_APP_NAME }}
           APP_URL: ${{ secrets.DEV_APP_URL }}
+          ASSET_URL: ${{ secrets.DEV_ASSET_URL }}
           FRONTEND_URL: ${{ secrets.DEV_FRONTEND_URL }}
           DB_HOST: ${{ secrets.DEV_DB_HOST }}
           DB_PORT: ${{ secrets.DEV_DB_PORT }}
@@ -56,10 +57,11 @@ jobs:
             # Memastikan ada environment file dasar dan database sqlite fallback
             if [ ! -f .env ]; then cp .env.example .env; fi
             touch database/database.sqlite
-            
+
             # Bersihkan variabel Secrets dari karakter spasi/enter tersembunyi (CR/LF)
             APP_NAME=$(echo "$APP_NAME" | tr -d '\r\n') # Spasi pada nama aplikasi diizinkan
             APP_URL=$(echo "$APP_URL" | tr -d '\r\n ')
+            ASSET_URL=$(echo "$ASSET_URL" | tr -d '\r\n ')
             FRONTEND_URL=$(echo "$FRONTEND_URL" | tr -d '\r\n ')
             DB_HOST=$(echo "$DB_HOST" | tr -d '\r\n ')
             DB_PORT=$(echo "$DB_PORT" | tr -d '\r\n ')
@@ -84,6 +86,7 @@ jobs:
             # Set Config otomatis via Secrets
             update_env "APP_NAME" "$APP_NAME"
             update_env "APP_URL" "$APP_URL"
+            update_env "ASSET_URL" "$ASSET_URL"
             update_env "FRONTEND_URL" "$FRONTEND_URL"
             update_env "DB_HOST" "$DB_HOST"
             update_env "DB_PORT" "$DB_PORT"
