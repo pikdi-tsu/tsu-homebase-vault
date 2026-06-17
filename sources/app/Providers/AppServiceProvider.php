@@ -39,7 +39,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
         
-        if (env('APP_ENV') === 'production' && !is_dir(base_path('../sources'))) {
+        // Deteksi arsitektur: Jika folder sources tidak ada di parent, berarti ini DirectAdmin (core dipisah dari public_html)
+        if (!is_dir(base_path('../sources'))) {
             $this->app->usePublicPath(base_path('../public_html'));
         } else {
             $this->app->usePublicPath(base_path('../'));
