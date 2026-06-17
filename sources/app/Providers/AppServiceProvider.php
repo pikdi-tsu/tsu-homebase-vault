@@ -56,19 +56,19 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('super admin') ? true : null;
         });
 
-        if (env('APP_ENV') !== 'local') {
+        if (config('app.env') !== 'local') {
             $appUrl = config('app.url') ?? '';
             $parsedUrl = parse_url($appUrl, PHP_URL_PATH);
             $subfolder = is_string($parsedUrl) ? rtrim($parsedUrl, '/') : '';
 
             // Arahkan jalur AJAX Livewire ke dalam subfolder
             Livewire::setUpdateRoute(function ($handle) use ($subfolder) {
-                return Route::post($subfolder . '/livewire/update', $handle)->middleware('web');
+                return Route::post($subfolder . '/livewire/update', $handle)->middleware('web')->name('livewire.update');
             });
 
             // Arahkan jalur Script Livewire ke dalam subfolder
             Livewire::setScriptRoute(function ($handle) use ($subfolder) {
-                return Route::get($subfolder . '/livewire/livewire.js', $handle);
+                return Route::get($subfolder . '/livewire/livewire.js', $handle)->name('livewire.player');
             });
         }
         

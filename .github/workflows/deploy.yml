@@ -139,18 +139,21 @@ jobs:
             update_env "APP_ENV" "production"
             update_env "APP_DEBUG" "false"
             update_env "FORCE_HTTPS" "true"
+            update_env "SESSION_SECURE_COOKIE" "true"
 
             wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
             export COMPOSER_ALLOW_SUPERUSER=1
             php composer.phar install --ignore-platform-reqs --no-dev --optimize-autoloader
 
-            # Generate APP_KEY jika masih kosong
-            if grep -q "^APP_KEY=$" .env; then
+            # Bersihkan cache sebelum key:generate agar tidak membaca cache lama
+            php artisan optimize:clear
+
+            # Generate APP_KEY jika belum valid
+            if ! grep -q "^APP_KEY=base64:" .env; then
                 php artisan key:generate --force
             fi
 
             # Optimasi Framework
-            php artisan optimize:clear
             php artisan optimize
             php artisan view:cache
             php artisan filament:optimize
