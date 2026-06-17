@@ -99,6 +99,7 @@ jobs:
             update_env "APP_ENV" "local"
             update_env "APP_DEBUG" "true"
             update_env "FORCE_HTTPS" "false"
+            update_env "SESSION_SECURE_COOKIE" "false"
 
             # Install dependensi PHP memakai composer.phar agar konsisten dengan production
             wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
