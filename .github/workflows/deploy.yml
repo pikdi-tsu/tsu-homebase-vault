@@ -1,4 +1,4 @@
-name: deploy.yml
+name: Deploy to DirectAdmin (Production)
 on:
   push:
     branches:
