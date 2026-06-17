@@ -76,10 +76,11 @@ jobs:
                 if [ -n "$val" ]; then
                     # Escape tanda petik ganda di dalam value
                     local escaped_val=$(echo "$val" | sed 's/"/\\"/g')
-                    # Hapus baris lama
-                    sed -i "/^${key}=/d" .env
-                    # Tambahkan baris baru dengan quote
-                    echo "${key}=\"${escaped_val}\"" >> .env
+                    if grep -q "^${key}=" .env; then
+                        sed -i "s|^${key}=.*|${key}=\"${escaped_val}\"|" .env
+                    else
+                        echo "${key}=\"${escaped_val}\"" >> .env
+                    fi
                 fi
             }
 
@@ -104,8 +105,8 @@ jobs:
             export COMPOSER_ALLOW_SUPERUSER=1
             php composer.phar install --ignore-platform-reqs --no-interaction --prefer-dist --optimize-autoloader
 
-            # Generate APP_KEY jika masih kosong
-            if grep -q "^APP_KEY=$" .env; then
+            # Generate APP_KEY jika belum valid
+            if ! grep -q "^APP_KEY=base64:" .env; then
                 php artisan key:generate --force
             fi
 
