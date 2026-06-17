@@ -74,7 +74,9 @@ return [
     */
 
     'links' => [
-        base_path('../storage') => storage_path('app/public'),
+        (env('APP_ENV') === 'production' && !is_dir(base_path('../sources'))
+            ? base_path('../public_html/storage')
+            : base_path('../storage')) => storage_path('app/public'),
     ],
 
 ];
