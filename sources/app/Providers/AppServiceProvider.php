@@ -38,7 +38,12 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
-        $this->app->usePublicPath(base_path('../'));
+        
+        if (env('APP_ENV') === 'production' && !is_dir(base_path('../sources'))) {
+            $this->app->usePublicPath(base_path('../public_html'));
+        } else {
+            $this->app->usePublicPath(base_path('../'));
+        }
     }
 
     /**
@@ -51,8 +56,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         if (env('APP_ENV') !== 'local') {
-            $appUrl = config('app.url');
-            $subfolder = rtrim(parse_url($appUrl, PHP_URL_PATH) ?? '', '/');
+            $appUrl = config('app.url') ?? '';
+            $parsedUrl = parse_url($appUrl, PHP_URL_PATH);
+            $subfolder = is_string($parsedUrl) ? rtrim($parsedUrl, '/') : '';
 
             // Arahkan jalur AJAX Livewire ke dalam subfolder
             Livewire::setUpdateRoute(function ($handle) use ($subfolder) {

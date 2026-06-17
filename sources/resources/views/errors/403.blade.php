@@ -45,7 +45,7 @@
 
 <div class="min-h-screen flex flex-col items-center justify-center text-center px-4">
     <div class="mb-6">
-        <a href="{{ route('dashboard') }}" class="flex justify-center">
+        <a href="{{ url('/dashboard') }}" class="flex justify-center">
             <img src="{{ asset('images/icon-logo-tsu.png') }}" alt="Ikon Tiga Serangkai University" width="40px" />
         </a>
     </div>
@@ -53,7 +53,7 @@
     <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Maaf, Anda tidak memiliki izin yang diperlukan untuk mengakses halaman ini. Fitur ini mungkin hanya tersedia untuk peran pengguna tertentu.</p>
     <p class="mt-2 text-gray-500 dark:text-gray-300">
         Kembali ke Halaman Sebelumnya atau
-        <a href="{{ route('dashboard') }}" class="text-blue-500 dark:text-blue-400 underline">Dashboard</a>
+        <a href="{{ url('/dashboard') }}" class="text-blue-500 dark:text-blue-400 underline">Dashboard</a>
     </p>
 </div>
 

@@ -27,11 +27,19 @@ jobs:
 
       - name: Execute Post-Deploy Scripts via SSH
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          APP_URL: ${{ secrets.DEV_APP_URL }}
+          DB_HOST: ${{ secrets.DEV_DB_HOST }}
+          DB_PORT: ${{ secrets.DEV_DB_PORT }}
+          DB_DATABASE: ${{ secrets.DEV_DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DEV_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
         with:
           host: ${{ secrets.DEV_SSH_HOST }}
           username: ${{ secrets.DEV_SSH_USERNAME }}
           key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
           port: 22
+          envs: APP_URL,DB_HOST,DB_PORT,DB_DATABASE,DB_USERNAME,DB_PASSWORD
           script: |
             set -e
             # Melompat tepat ke jantung aplikasi
@@ -43,20 +51,61 @@ jobs:
             mkdir -p resources/js
             touch resources/js/custom-filament.js
 
+            # Memastikan ada environment file dasar dan database sqlite fallback
+            if [ ! -f .env ]; then cp .env.example .env; fi
+            touch database/database.sqlite
+            
+            # Bersihkan variabel Secrets dari karakter spasi/enter tersembunyi (CR/LF)
+            APP_URL=$(echo "$APP_URL" | tr -d '\r\n ')
+            DB_HOST=$(echo "$DB_HOST" | tr -d '\r\n ')
+            DB_PORT=$(echo "$DB_PORT" | tr -d '\r\n ')
+            DB_DATABASE=$(echo "$DB_DATABASE" | tr -d '\r\n ')
+            DB_USERNAME=$(echo "$DB_USERNAME" | tr -d '\r\n ')
+            DB_PASSWORD=$(echo "$DB_PASSWORD" | tr -d '\r\n') # Jangan hapus spasi pada password
+
+            # Fungsi aman untuk update .env dengan tanda petik
+            update_env() {
+                local key=$1
+                local val=$2
+                if [ -n "$val" ]; then
+                    # Escape tanda petik ganda di dalam value
+                    local escaped_val=$(echo "$val" | sed 's/"/\\"/g')
+                    # Hapus baris lama
+                    sed -i "/^${key}=/d" .env
+                    # Tambahkan baris baru dengan quote
+                    echo "${key}=\"${escaped_val}\"" >> .env
+                fi
+            }
+
+            # Set Config otomatis via Secrets
+            update_env "APP_URL" "$APP_URL"
+            update_env "DB_HOST" "$DB_HOST"
+            update_env "DB_PORT" "$DB_PORT"
+            update_env "DB_DATABASE" "$DB_DATABASE"
+            update_env "DB_USERNAME" "$DB_USERNAME"
+            update_env "DB_PASSWORD" "$DB_PASSWORD"
+
             # Install dependensi PHP memakai composer.phar agar konsisten dengan production
             wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
-            php composer.phar install --no-interaction --prefer-dist --optimize-autoloader
+            export COMPOSER_ALLOW_SUPERUSER=1
+            php composer.phar install --ignore-platform-reqs --no-interaction --prefer-dist --optimize-autoloader
 
-            # Memastikan hak akses folder cache dan log aman. 
-            # (Jika server 202 pakai user 'bertha' untuk web servernya, ganti www-data menjadi bertha)
-            chown -R www-data:www-data storage bootstrap/cache
-            chmod -R 775 storage bootstrap/cache
+            # Generate APP_KEY jika masih kosong
+            if grep -q "^APP_KEY=$" .env; then
+                php artisan key:generate --force
+            fi
 
             # Optimasi Framework
             php artisan optimize:clear
             php artisan optimize
             php artisan view:cache
             php artisan filament:optimize
+            php artisan storage:link
 
             # Migrasi Database
             php artisan migrate --force
+
+            # Memastikan hak akses folder cache dan log aman SETELAH semua file tergenerate
+            chown -R www-data:www-data storage bootstrap/cache
+            chmod -R 775 storage bootstrap/cache
+            chmod 600 storage/*.key 2>/dev/null || true
