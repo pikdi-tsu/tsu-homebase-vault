@@ -56,7 +56,7 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('super admin') ? true : null;
         });
 
-        if (env('APP_ENV') !== 'local') {
+        if (config('app.env') !== 'local') {
             $appUrl = config('app.url') ?? '';
             $parsedUrl = parse_url($appUrl, PHP_URL_PATH);
             $subfolder = is_string($parsedUrl) ? rtrim($parsedUrl, '/') : '';
