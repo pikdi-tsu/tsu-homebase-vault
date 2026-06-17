@@ -93,6 +93,11 @@ jobs:
             update_env "DB_DATABASE" "$DB_DATABASE"
             update_env "DB_USERNAME" "$DB_USERNAME"
             update_env "DB_PASSWORD" "$DB_PASSWORD"
+            
+            # Set Config environment dasar
+            update_env "APP_ENV" "local"
+            update_env "APP_DEBUG" "true"
+            update_env "FORCE_HTTPS" "false"
 
             # Install dependensi PHP memakai composer.phar agar konsisten dengan production
             wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
