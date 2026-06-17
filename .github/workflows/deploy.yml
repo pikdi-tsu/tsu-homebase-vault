@@ -83,7 +83,14 @@ jobs:
           envs: APP_NAME,APP_URL,ASSET_URL,FRONTEND_URL,DB_HOST,DB_PORT,DB_DATABASE,DB_USERNAME,DB_PASSWORD
           script: |
             set -e
-            cd domains/homebase.tsu.ac.id/tsu_homebase_core
+            
+            # 1. Sesuaikan path index.php di public_html agar mengarah ke tsu_homebase_core bukan sources
+            cd domains/homebase.tsu.ac.id/public_html
+            sed -i "s|/sources/vendor/|/tsu_homebase_core/vendor/|g" index.php
+            sed -i "s|/sources/bootstrap/|/tsu_homebase_core/bootstrap/|g" index.php
+            
+            # 2. Masuk ke core untuk install & optimasi
+            cd ../tsu_homebase_core
             mkdir -p storage/framework/{sessions,views,cache}
             mkdir -p bootstrap/cache
             mkdir -p resources/js
