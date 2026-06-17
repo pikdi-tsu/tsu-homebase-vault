@@ -63,12 +63,12 @@ class AppServiceProvider extends ServiceProvider
 
             // Arahkan jalur AJAX Livewire ke dalam subfolder
             Livewire::setUpdateRoute(function ($handle) use ($subfolder) {
-                return Route::post($subfolder . '/livewire/update', $handle)->middleware('web');
+                return Route::post($subfolder . '/livewire/update', $handle)->middleware('web')->name('livewire.update');
             });
 
             // Arahkan jalur Script Livewire ke dalam subfolder
             Livewire::setScriptRoute(function ($handle) use ($subfolder) {
-                return Route::get($subfolder . '/livewire/livewire.js', $handle);
+                return Route::get($subfolder . '/livewire/livewire.js', $handle)->name('livewire.player');
             });
         }
         
