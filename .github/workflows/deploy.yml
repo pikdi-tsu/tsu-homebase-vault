@@ -139,6 +139,7 @@ jobs:
             update_env "APP_ENV" "production"
             update_env "APP_DEBUG" "false"
             update_env "FORCE_HTTPS" "true"
+            update_env "SESSION_SECURE_COOKIE" "true"
 
             wget -O composer.phar https://getcomposer.org/download/latest-stable/composer.phar
             export COMPOSER_ALLOW_SUPERUSER=1
