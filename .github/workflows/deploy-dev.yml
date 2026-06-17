@@ -42,7 +42,7 @@ jobs:
           username: ${{ secrets.DEV_SSH_USERNAME }}
           key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
           port: 22
-          envs: APP_NAME,APP_URL,FRONTEND_URL,DB_HOST,DB_PORT,DB_DATABASE,DB_USERNAME,DB_PASSWORD
+          envs: APP_NAME,APP_URL,ASSET_URL,FRONTEND_URL,DB_HOST,DB_PORT,DB_DATABASE,DB_USERNAME,DB_PASSWORD
           script: |
             set -e
             # Melompat tepat ke jantung aplikasi
