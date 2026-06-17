@@ -144,8 +144,8 @@ jobs:
             export COMPOSER_ALLOW_SUPERUSER=1
             php composer.phar install --ignore-platform-reqs --no-dev --optimize-autoloader
 
-            # Generate APP_KEY jika masih kosong
-            if grep -q "^APP_KEY=$" .env; then
+            # Generate APP_KEY jika belum valid
+            if ! grep -q "^APP_KEY=base64:" .env; then
                 php artisan key:generate --force
             fi
 
