@@ -3,9 +3,7 @@
 namespace App\Filament\Resources\UserMahasiswaResource\Pages;
 
 use App\Filament\Resources\UserMahasiswaResource;
-use App\Models\MasterGroup;
 use App\Models\PertanyaanKeamanan;
-use App\Models\PrivilegePMB;
 use Filament\Actions;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -65,15 +63,6 @@ class CreateUserMahasiswa extends CreateRecord
                         ->preload()
                         ->helperText('Format: Nama Permission (guard)'),
 
-                    // ROLE SIAKAD & PMB LEGACY (Dari MasterGroup)
-                    Select::make('role_access')
-                        ->label('Role Legacy')
-                        ->options(MasterGroup::all()->pluck('NamaGroup', 'KodeGroupUser'))
-                        ->searchable(),
-                    Select::make('privilege_pmb')
-                        ->label('Privilege PMB')
-                        ->options(PrivilegePMB::all()->pluck('NamaGroup', 'KodeGroupUser'))
-                        ->searchable(),
 
                     // Security Question
                     Select::make('q1')

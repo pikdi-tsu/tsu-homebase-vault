@@ -4,11 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Actions\SharedRemoteLogin;
 use App\Filament\Columns\StatusOnlineColumn;
-use App\Models\MasterGroup;
 use App\Models\Module;
 use App\Models\ModuleAccessLog;
 use App\Models\PertanyaanKeamanan;
-use App\Models\PrivilegePMB;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
@@ -149,15 +147,6 @@ class UserDosenTendikResource extends Resource
                     ->preload()
                     ->helperText('Format: Nama Permission (guard)'),
 
-                // ROLE SIAKAD & PMB LEGACY (Dari MasterGroup)
-//                Select::make('role_access')
-//                    ->label('Role Legacy')
-//                    ->options(MasterGroup::all()->pluck('NamaGroup', 'KodeGroupUser'))
-//                    ->searchable(),
-//                Select::make('privilege_pmb')
-//                    ->label('Privilege PMB')
-//                    ->options(PrivilegePMB::all()->pluck('NamaGroup', 'KodeGroupUser'))
-//                    ->searchable(),
 
                 // Security Question
                 Select::make('q1')
@@ -240,25 +229,6 @@ class UserDosenTendikResource extends Resource
                     ->expandableLimitedList()
                     ->searchable(),
 
-                // ROLE SIAKAD & PMB LEGACY (Dari MasterGroup)
-//                TextColumn::make('MasterGroup.NamaGroup')
-//                    ->label('Role Legacy')
-//                    ->placeholder('Tidak ada role')
-//                    ->badge()
-//                    ->limitList(2)
-//                    ->listWithLineBreaks()
-//                    ->expandableLimitedList()
-//                    ->color('secondary')
-//                    ->searchable(),
-//                TextColumn::make('MasterGroupPMB.NamaGroup')
-//                    ->label('Privilege PMB')
-//                    ->placeholder('Tidak ada role')
-//                    ->badge()
-//                    ->limitList(2)
-//                    ->listWithLineBreaks()
-//                    ->expandableLimitedList()
-//                    ->color('secondary')
-//                    ->searchable(),
 
                 // Security Question
 //                TextColumn::make('pertanyaanKeamananSatu.pertanyaan')
