@@ -103,13 +103,4 @@ class UserMahasiswa extends Authenticatable implements OAuthenticatable, HasAvat
         return $this->profile_photo_url;
     }
 
-    public function MasterGroup()
-    {
-        return $this->belongsTo(MasterGroup::class, 'role_access', 'KodeGroupUser');
-    }
-
-    public function MasterGroupPMB()
-    {
-        return $this->belongsTo(PrivilegePMB::class, 'privilege_pmb', 'KodeGroupUser');
-    }
 }
