@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\UserDosenTendikResource\Pages;
 
-use App\Filament\Actions\ImportDosenTendikAction;
-use App\Models\BackupUsersDosenTendik;
 use App\Models\MasterGroup;
 use App\Services\DefaultPasswordService;
 use App\Traits\HasAccentCreateAction;
@@ -33,9 +31,6 @@ class ListUserDosenTendik extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            ImportDosenTendikAction::make()
-                ->successNotificationTitle('Import User Dosen/Tendik berhasil ditambahkan'),
-
             CreateAction::make()
                 ->label('Input Manual Dosen/Tendik')
                 ->color('secondary')

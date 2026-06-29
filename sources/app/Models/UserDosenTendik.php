@@ -122,10 +122,6 @@ class UserDosenTendik extends Authenticatable implements OAuthenticatable, HasAv
         return $this->profile_photo_url;
     }
 
-    public function backupData(): BelongsTo
-    {
-        return $this->belongsTo(BackupUsersDosenTendik::class, 'nik', 'nip');
-    }
 
     public function pertanyaanKeamananSatu(): BelongsTo
     {

@@ -2,9 +2,6 @@
 
 namespace App\Filament\Resources\UserMahasiswaResource\Pages;
 
-use App\Filament\Actions\ImportMahasiswaAction;
-use App\Models\BackupUsersDosenTendik;
-use App\Models\BackupUsersMahasiswa;
 use App\Services\DefaultPasswordService;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -30,9 +27,6 @@ class ListUserMahasiswa extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            ImportMahasiswaAction::make()
-                ->successNotificationTitle('Import User Dosen/Tendik berhasil ditambahkan'),
-
             CreateAction::make()
                 ->label('input Manual Mahasiswa')
                 ->icon('heroicon-m-pencil-square')
