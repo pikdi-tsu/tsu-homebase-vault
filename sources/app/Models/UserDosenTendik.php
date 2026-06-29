@@ -133,13 +133,4 @@ class UserDosenTendik extends Authenticatable implements OAuthenticatable, HasAv
         return $this->belongsTo(PertanyaanKeamanan::class, 'q2');
     }
 
-    public function MasterGroup()
-    {
-        return $this->belongsTo(MasterGroup::class, 'role_access', 'KodeGroupUser');
-    }
-
-    public function MasterGroupPMB()
-    {
-        return $this->belongsTo(PrivilegePMB::class, 'privilege_pmb', 'KodeGroupUser');
-    }
 }
